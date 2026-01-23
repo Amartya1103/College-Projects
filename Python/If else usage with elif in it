@@ -1,0 +1,19 @@
+n = input("Enter your nationality: ").lower()
+if n == "indian":
+    a = int(input("Enter your age: "))
+    if 17 <= a <= 25:
+        p = float(input("Enter your 12th grade percentage: "))
+        if p >= 80:
+            print("You are eligible for the scholarship.")
+        elif p >= 75:
+            i = int(input("Enter your annual family income: "))
+            if i < 200000:
+                print("You are eligible for the scholarship.")
+            else:
+                print("Not eligible: Income is more than ₹2,00,000.")
+        else:
+            print("Not eligible: Percentage is less than 75.")
+    else:
+        print("Not eligible: Age must be between 17 and 25.")
+else:
+    print("Not eligible: Must be an Indian citizen.")
