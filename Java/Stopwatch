@@ -1,0 +1,74 @@
+import java.util.Scanner;
+
+public class StopWatch {
+    static long start = 0, elapsed = 0;
+    static boolean running = false;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Commands: start | pause | resume | stop");
+
+        // Background thread for live clock
+        Thread clock = new Thread(() -> {
+            try {
+                while (true) {
+                    if (running) {
+                        long time = elapsed + (System.currentTimeMillis() - start);
+                        System.out.print("\rElapsed: " + formatTime(time));
+                    }
+                    Thread.sleep(200);
+                }
+            } catch (InterruptedException e) {
+                System.out.println("\nClock stopped.");
+            }
+        });
+        clock.setDaemon(true);
+        clock.start();
+
+        while (true) {
+            System.out.print("\nEnter command: ");
+            String cmd = sc.nextLine().trim().toLowerCase();
+
+            switch (cmd) {
+                case "start":
+                    if (!running && elapsed == 0) {
+                        start = System.currentTimeMillis();
+                        running = true;
+                        System.out.println("Stopwatch started!");
+                    } else System.out.println("Already started.");
+                    break;
+
+                case "pause":
+                    if (running) {
+                        elapsed += System.currentTimeMillis() - start;
+                        running = false;
+                        System.out.println("Paused!");
+                    } else System.out.println("Not running.");
+                    break;
+
+                case "resume":
+                    if (!running) {
+                        start = System.currentTimeMillis();
+                        running = true;
+                        System.out.println("Resumed!");
+                    } else System.out.println("Already running.");
+                    break;
+
+                case "stop":
+                    if (running) elapsed += System.currentTimeMillis() - start;
+                    running = false;
+                    System.out.println("\nTotal time: " + formatTime(elapsed));
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid command!");
+            }
+        }
+    }
+
+    static String formatTime(long ms) {
+        long s = ms / 1000, m = s / 60, h = m / 60;
+        return String.format("%02d:%02d:%02d", h, m % 60, s % 60);
+    }
+}
