@@ -1,0 +1,158 @@
+import java.time.LocalDate;
+import java.util.*;
+class student{
+  Scanner scan = new  Scanner (System.in);
+  ArrayList<String> list = new ArrayList<>();
+  ArrayList<Integer> list2 = new ArrayList<>();
+  ArrayList<String> list3 = new ArrayList<>();
+  int num;
+  LocalDate attendencedate ;
+  void getdetail() throws Exception{ 
+    System.out.print("Enter number of student :");
+    num = Integer.parseInt(scan.nextLine());
+    for (int i = 0; i < num ;i++){
+      System.out.print("Enter name : ");
+      String name = scan.nextLine();
+      list.add(name);
+      System.out.print("Enter roll no. : ");
+      int roll = Integer.parseInt(scan.nextLine());
+      list2.add(roll);
+    }
+  }
+  void showdetails(){
+    for(int i = 0 ;i < list2.size() ; i++){
+      int roll = list2.get(i);
+      String name = list.get(i);
+      System.out.println(roll +"  "+ name);
+    }
+  }
+  void markattendence() {
+    System.out.print("Enter date of attendance (yyyy-mm-dd): ");
+    String date = scan.nextLine();
+    LocalDate enteredDate = LocalDate.parse(date);
+    LocalDate today = LocalDate.now();
+    
+    if (enteredDate.isAfter(today)) {
+      System.out.println("Error: You cannot mark attendance for a future date!");
+      return;
+    }
+          
+    if (attendencedate != null && attendencedate.equals(enteredDate)) {
+      System.out.println("Error: Attendance for this date is already marked!");
+      return;
+    }
+
+    attendencedate = enteredDate;
+
+    System.out.println("\nMarking attendance for date: " + attendencedate);
+    System.out.println("For Present mark (y / yes / p)");
+    System.out.println("For Absent mark (n / no / a)\n");
+
+    list3.clear();
+    for (int i = 0; i < list2.size(); i++) {
+      while (true) {
+        System.out.print("Roll no. " + list2.get(i) + " : ");
+        String input = scan.nextLine().toLowerCase();
+
+        if (input.equals("y") || input.equals("yes") || input.equals("p") || input.equals("present")) {
+          list3.add("Present");
+          break;
+        } 
+        else if (input.equals("n") || input.equals("no") || input.equals("a") || input.equals("absent")) {
+          list3.add("Absent");
+          break;
+        } 
+        else {
+          System.out.println("Invalid input! Please enter y, yes, p, present, n, no, a, or absent.");
+        }
+      }
+    }
+  }
+
+  void showmarkedattendence(){
+    System.out.println("Attendence for Date :"+attendencedate);
+    for (int i =0 ; i < list2.size() ;i++){
+      System.out.println(list2.get(i) +"  "+list.get(i) + "   "+list3.get(i));
+    }
+  }
+  void managestudent(){
+    System.out.println("1. Add student  \n2. Delete student");
+    System.out.print("Enter your choice :");
+    int yourchoice = Integer.parseInt(scan.nextLine());
+    switch(yourchoice){
+      case 1:
+      System.out.print("Enter roll no. to add :");
+      int rollno = Integer.parseInt(scan.nextLine());
+      if (list2.contains(rollno)){
+        System.out.println("Roll no." +rollno +" already exist");
+      }
+      else{
+        list2.add(rollno);
+        System.out.print("Enter name to add :");
+        String addname = scan.nextLine();
+        list.add(addname);
+        System.out.println("New List ");
+        System.out.println(list2 +"  "+list);
+      }
+      break;
+      case 2:
+      System.out.print("Enter roll no to remove :");
+      int rollnotormv = Integer.parseInt(scan.nextLine());
+      if (list2.contains(rollnotormv)){
+        int index = list2.indexOf(rollnotormv);
+        list2.remove(index);
+        list.remove(index);
+        System.out.println("New list :");
+        System.out.println(list2 +"  "+list);
+      }
+      else{
+        System.out.println("roll no" +rollnotormv+" does not exist :");
+      }
+      break;
+    }
+   }
+}
+public class studentattendence {
+  public static void main (String [] args) throws Exception{
+    Scanner scan = new Scanner (System.in);
+    student obj = new student();
+    Boolean inputstatus = false;
+    while(!inputstatus)
+    try{
+      obj.getdetail();
+      inputstatus = true ;
+    }
+    catch(NumberFormatException  e){
+      System.out.println("error :entered data is different from expected type");
+      System.out.println("try again!");
+    }
+    int choice;
+    do {
+      System.out.println("=============== STUDENT ATTENDENCE SYSTEM ===============");
+      System.out.print("1. Mark attendence \n2. Show marked attendence  \n3.Show details of student  \n4. Manage student \n5.Exit \n");
+      System.out.print("Enter your choice :");
+      choice = scan.nextInt();
+      switch(choice){
+        case 1:
+        obj.markattendence();
+        break;
+        case 2:
+        obj.showmarkedattendence();
+        break;
+        case 3:
+        obj.showdetails();
+        break;
+        case 4:
+        obj.managestudent();
+        break;
+        case 5:
+        System.out.println("Exiting system");
+        break;
+        default:
+        System.out.println("Invalid choice! please enter a valid number");
+      }
+    }
+    while (choice != 5);
+    scan.close();
+  }
+}
